@@ -1,9 +1,8 @@
 
 package quickbite_backend.model;
-
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(
     name = "cart_items",
@@ -45,10 +44,12 @@ public class CartItem {
     public void setCartItemId(Integer cartItemId) {
         this.cartItemId = cartItemId;
     }
-
+    
+    @JsonIgnore
     public User getUser() {
         return user;
     }
+
 
     public void setUser(User user) {
         this.user = user;

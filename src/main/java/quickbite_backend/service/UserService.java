@@ -43,14 +43,36 @@ public class UserService {
 
         User user = userRepository.findByEmail(email);
 
-        if (user == null ||
-            !passwordEncoder.matches(password, user.getPasswordHash())) {
-
+        if (user == null) {
             throw new IllegalArgumentException(
-                "Invalid email or password"
-            );
+                    "Invalid email or password");
         }
 
-        return user;
+        String storedPassword = user.getPasswordHash();
+
+        // Check whether password is already BCrypt encoded
+        if (storedPassword != null &&
+                storedPassword.matches("^\\$2[aby]\\$.{56}$")) {
+
+            if (passwordEncoder.matches(password, storedPassword)) {
+                return user;
+            }
+
+        } else {
+
+            // Migrate old plain-text password to BCrypt
+            if (password.equals(storedPassword)) {
+
+                user.setPasswordHash(
+                        passwordEncoder.encode(password));
+
+                userRepository.save(user);
+
+                return user;
+            }
+        }
+
+        throw new IllegalArgumentException(
+                "Invalid email or password");
     }
 }

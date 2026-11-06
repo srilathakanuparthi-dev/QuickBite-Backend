@@ -17,22 +17,8 @@ public class OrderController {
     private final OrderService orderService;
     @GetMapping("/user/{userId}")
     public List<OrderResponse> getUserOrders(@PathVariable Integer userId) {
-
-        return orderService.getUserOrders(userId)
-                .stream()
-                .map(order -> new OrderResponse(
-                        order.getOrderId(),
-                        order.getCustomerName(),
-                        order.getPhone(),
-                        order.getDeliveryAddress(),
-                        order.getPaymentMethod(),
-                        order.getTotalAmount(),
-                        order.getOrderStatus(),
-                        order.getOrderDate()
-                ))
-                .toList();
+        return orderService.getUserOrders(userId);
     }
-
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
@@ -56,6 +42,22 @@ public class OrderController {
                 "totalAmount", order.getTotalAmount(),
                 "paymentMethod", order.getPaymentMethod(),
                 "orderStatus", order.getOrderStatus()
+        );
+    }
+    @PutMapping("/{orderId}/status")
+    public Map<String, Object> updateOrderStatus(
+            @PathVariable Integer orderId,
+            @RequestBody Map<String, String> request) {
+
+        Order updatedOrder = orderService.updateOrderStatus(
+                orderId,
+                request.get("status")
+        );
+
+        return Map.of(
+                "message", "Order status updated successfully",
+                "orderId", updatedOrder.getOrderId(),
+                "orderStatus", updatedOrder.getOrderStatus()
         );
     }
     

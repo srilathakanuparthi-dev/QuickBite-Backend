@@ -1,6 +1,7 @@
 package quickbite_backend.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class OrderResponse {
 
@@ -13,10 +14,13 @@ public class OrderResponse {
     private String orderStatus;
     private LocalDateTime orderDate;
 
+    private List<OrderItemResponse> items;
+
     public OrderResponse(Integer orderId, String customerName,
             String phone, String deliveryAddress,
             String paymentMethod, Double totalAmount,
-            String orderStatus, LocalDateTime orderDate) {
+            String orderStatus, LocalDateTime orderDate,
+            List<OrderItemResponse> items) {
 
         this.orderId = orderId;
         this.customerName = customerName;
@@ -26,6 +30,7 @@ public class OrderResponse {
         this.totalAmount = totalAmount;
         this.orderStatus = orderStatus;
         this.orderDate = orderDate;
+        this.items = items;
     }
 
     public Integer getOrderId() { return orderId; }
@@ -36,4 +41,5 @@ public class OrderResponse {
     public Double getTotalAmount() { return totalAmount; }
     public String getOrderStatus() { return orderStatus; }
     public LocalDateTime getOrderDate() { return orderDate; }
+    public List<OrderItemResponse> getItems() { return items; }
 }

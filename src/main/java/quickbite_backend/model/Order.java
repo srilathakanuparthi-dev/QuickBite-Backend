@@ -34,6 +34,8 @@ public class Order {
 
     @Column(name = "order_status")
     private String orderStatus = "PLACED";
+    @Column(name = "manual_status", nullable = false)
+    private Boolean manualStatus = false;
 
     @Column(name = "order_date")
     private LocalDateTime orderDate;
@@ -109,5 +111,12 @@ public class Order {
 
     public LocalDateTime getOrderDate() {
         return orderDate;
+    }
+    public Boolean getManualStatus() {
+        return manualStatus;
+    }
+
+    public void setManualStatus(Boolean manualStatus) {
+        this.manualStatus = manualStatus;
     }
 }

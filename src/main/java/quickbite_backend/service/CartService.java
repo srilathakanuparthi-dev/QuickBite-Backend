@@ -28,16 +28,35 @@ public class CartService {
         this.userRepository = userRepository;
         this.foodRepository = foodRepository;
     }
+    
+    private void validateUser(Integer userId) {
+
+        String loggedInUserId = org.springframework.security.core.context.SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        if (!loggedInUserId.equals(String.valueOf(userId))) {
+            throw new RuntimeException("You are not allowed to access this cart");
+        }
+    }
 
     public List<CartItem> getCart(Integer userId) {
+
+        validateUser(userId);
+
         return cartRepository.findByUser_UserId(userId);
     }
 
     @Transactional
     public CartItem addToCart(Integer userId, Integer foodId) {
 
+        validateUser(userId);
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        
 
         Food food = foodRepository.findById(foodId)
                 .orElseThrow(() -> new RuntimeException("Food not found"));
@@ -60,9 +79,14 @@ public class CartService {
 
     @Transactional
     public void removeFromCart(Integer userId, Integer foodId) {
+
+        validateUser(userId);
+
         cartRepository.deleteByUser_UserIdAndFood_FoodId(userId, foodId);
     }
     public Double getCartTotal(Integer userId) {
+
+        validateUser(userId);
 
         List<CartItem> items = cartRepository.findByUser_UserId(userId);
 
@@ -72,7 +96,10 @@ public class CartService {
                 )
                 .sum();
     }
+    @Transactional
     public CartItem updateCartQuantity(Integer userId, Integer foodId, Integer quantity) {
+
+        validateUser(userId);
 
         CartItem cartItem = cartRepository
                 .findByUser_UserIdAndFood_FoodId(userId, foodId)
